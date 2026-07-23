@@ -82,6 +82,14 @@ def test_hash_stability_known_digest(tmp_path):
     assert result["id"] == "b94d27b9934d"
 
 
+def test_source_human_accepted(tmp_path):
+    kb = make_kb(tmp_path)
+    result, code = run_capture(tmp_path, kb, "Filed by a human directly.",
+                               source="human")
+    assert code == 0
+    assert "source: human" in (kb / result["path"]).read_text()
+
+
 def test_duplicate_noop(tmp_path):
     kb = make_kb(tmp_path)
     first, code0 = run_capture(tmp_path, kb, "Same learning body.")

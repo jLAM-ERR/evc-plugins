@@ -53,7 +53,7 @@ ROUTING = {
     "correct": "conventions",
     "decline": "anti-patterns",
 }
-SOURCES = ("gate", "self-review", "retro")
+SOURCES = ("gate", "self-review", "retro", "human")
 RELATED_KINDS = ("related", "umbrella", "contradiction")
 CATEGORIES = ("patterns", "conventions", "solutions", "anti-patterns", "glossary")
 SECTION_FOR = {
