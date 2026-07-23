@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Enterprise Vibe Coding plugins: learning loop (capture/retro/distill/promote) and generic gated workflow. Knowledge formats are defined by the evc repo's CONTRACT.md.",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
