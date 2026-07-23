@@ -1,0 +1,5 @@
+{
+  "name": "evc-workflow",
+  "version": "0.1.0",
+  "description": "Generic gated workflow (intake with interrogation, design panel, implement, harden+review, wrap-up) extracted from upstream-source; gate decisions feed the evc-learning capture CLI and wrap-up triggers distill on thresholds. Corporate ticket/PR wiring stays in downstream overlays."
+}

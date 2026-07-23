@@ -12,6 +12,11 @@
       "name": "evc-learning",
       "source": "./plugins/evc-learning",
       "description": "EVC learning loop: capture / retro / distill / promote."
+    },
+    {
+      "name": "evc-workflow",
+      "source": "./plugins/evc-workflow",
+      "description": "Generic gated workflow (v0: run skill + 5 role agents) wired to the evc-learning loop."
     }
   ]
 }
