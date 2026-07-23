@@ -30,9 +30,10 @@ from pathlib import Path
 
 def _find_evclib() -> Path:
     for parent in Path(__file__).resolve().parents:
-        candidate = parent / "tools" / "evclib"
-        if candidate.is_dir():
-            return parent / "tools"
+        for rel in ("lib", "tools"):
+            candidate = parent / rel / "evclib"
+            if candidate.is_dir():
+                return parent / rel
     raise SystemExit("mechanical.py: cannot locate tools/evclib")
 
 
@@ -176,18 +177,26 @@ def stale_candidates(entries: list[Entry], today: date) -> list[str]:
 
 
 def chunk_actions(actions: list[dict]) -> list[list[dict]]:
-    """Greedy-pack actions into PR chunks of <= PR_ENTRY_BUDGET entries.
-    An action larger than the budget becomes its own chunk marked
-    oversized (the skill must split it semantically)."""
+    """Greedy-pack actions into PR chunks; NO emitted chunk ever exceeds
+    PR_ENTRY_BUDGET entries (the budget is enforcement, not advice). An
+    action larger than the budget is mechanically split into consecutive
+    sub-actions, each its own chunk flagged `oversized: True` — the skill
+    should re-cut those on semantic boundaries if the mechanical cut is
+    awkward, but even untouched they respect the contract budget."""
     chunks: list[list[dict]] = []
     current: list[dict] = []
     current_size = 0
     for action in actions:
-        size = len(action["entries"])
-        if size > PR_ENTRY_BUDGET:
-            action = {**action, "oversized": True}
-            chunks.append([action])
+        entries = action["entries"]
+        if len(entries) > PR_ENTRY_BUDGET:
+            for i in range(0, len(entries), PR_ENTRY_BUDGET):
+                part = {**action,
+                        "entries": entries[i : i + PR_ENTRY_BUDGET],
+                        "oversized": True,
+                        "part": i // PR_ENTRY_BUDGET + 1}
+                chunks.append([part])
             continue
+        size = len(entries)
         if current_size + size > PR_ENTRY_BUDGET and current:
             chunks.append(current)
             current, current_size = [], 0

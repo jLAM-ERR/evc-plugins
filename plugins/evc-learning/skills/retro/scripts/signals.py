@@ -27,9 +27,10 @@ from pathlib import Path
 
 def _find_evclib() -> Path:
     for parent in Path(__file__).resolve().parents:
-        candidate = parent / "tools" / "evclib"
-        if candidate.is_dir():
-            return parent / "tools"
+        for rel in ("lib", "tools"):
+            candidate = parent / rel / "evclib"
+            if candidate.is_dir():
+                return parent / rel
     raise SystemExit("signals.py: cannot locate tools/evclib")
 
 

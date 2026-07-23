@@ -40,9 +40,11 @@ eval gate exists — CONTRACT §Moderation).
    edit, recompute the entry `id` (kb-lint hard-fails on mismatch) and
    keep INDEX.md lines in sync.
 
-4. **One chunk = one PR.** If the report produced multiple chunks (or an
-   `oversized` action you had to split), open them as separate PRs — the
-   15-entry budget is enforcement, not advice.
+4. **One chunk = one PR.** If the report produced multiple chunks, open
+   them as separate PRs — the 15-entry budget is enforcement, not advice.
+   Chunks flagged `oversized` are mechanical splits of one big action:
+   re-cut them on semantic boundaries if the mechanical cut is awkward,
+   but never merge them back over the budget.
 
 5. **Close out the PR:** append one line to `docs/knowledge/.gardening-log`
    *inside the PR*: `YYYY-MM-DD gardening: <n> entries, <summary>`. Run

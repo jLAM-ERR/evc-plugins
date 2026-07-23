@@ -26,8 +26,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
+import time
 import unicodedata
 from datetime import date
 from pathlib import Path
@@ -35,9 +37,10 @@ from pathlib import Path
 
 def _find_evclib() -> Path:
     for parent in Path(__file__).resolve().parents:
-        candidate = parent / "tools" / "evclib"
-        if candidate.is_dir():
-            return parent / "tools"
+        for rel in ("lib", "tools"):
+            candidate = parent / rel / "evclib"
+            if candidate.is_dir():
+                return parent / rel
     raise SystemExit("new_entry.py: cannot locate tools/evclib (repo layout broken)")
 
 
@@ -142,14 +145,18 @@ def find_duplicate(kb_root: Path, entry_id: str) -> Path | None:
     return None
 
 
-def unique_filename(cat_dir: Path, today: date, slug: str) -> Path:
+def claim_entry_file(cat_dir: Path, today: date, slug: str) -> tuple[Path, int]:
+    """Atomically claim a free filename (O_CREAT|O_EXCL) so concurrent
+    captures with the same slug can never overwrite each other."""
     base = f"{today.strftime('%Y%m%d')}-{slug}"
-    candidate = cat_dir / f"{base}.md"
-    n = 2
-    while candidate.exists():
-        candidate = cat_dir / f"{base}-{n}.md"
-        n += 1
-    return candidate
+    n = 1
+    while True:
+        name = f"{base}.md" if n == 1 else f"{base}-{n}.md"
+        path = cat_dir / name
+        try:
+            return path, os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            n += 1
 
 
 def build_entry(
@@ -179,29 +186,66 @@ def build_entry(
     return "\n".join(lines)
 
 
-def add_index_line(kb_root: Path, category: str, filename: str, topic: str, hook: str):
+LOCK_RETRIES = 100
+LOCK_DELAY_SECONDS = 0.05
+LOCK_STALE_SECONDS = 60
+
+
+def _acquire_index_lock(kb_root: Path) -> int | None:
+    lock = kb_root / ".index.lock"
+    for _ in range(LOCK_RETRIES):
+        try:
+            return os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                if time.time() - lock.stat().st_mtime > LOCK_STALE_SECONDS:
+                    lock.unlink(missing_ok=True)
+                    continue
+            except FileNotFoundError:
+                continue
+            time.sleep(LOCK_DELAY_SECONDS)
+    return None
+
+
+def add_index_line(
+    kb_root: Path, category: str, filename: str, topic: str, hook: str
+) -> bool:
+    """Insert the entry's INDEX line under a lockfile: re-read inside the
+    lock (so concurrent captures never drop each other's lines) and land
+    the result with an atomic replace. Returns False (caller warns) if the
+    lock cannot be acquired — the entry then surfaces as a kb-lint orphan
+    rather than corrupting the index."""
     index = kb_root / "INDEX.md"
     if not index.is_file():
-        return
-    entry_line = f"- [{topic}]({category}/{filename}) — {hook}"
-    lines = index.read_text(encoding="utf-8").split("\n")
-    heading = SECTION_FOR[category]
+        return True
+    lock_fd = _acquire_index_lock(kb_root)
+    if lock_fd is None:
+        return False
     try:
-        start = lines.index(heading)
-    except ValueError:
-        lines += ["", heading, "", entry_line]
-        index.write_text("\n".join(lines), encoding="utf-8")
-        return
-    end = len(lines)
-    for i in range(start + 1, len(lines)):
-        if lines[i].startswith("## "):
-            end = i
-            break
-    insert_at = end
-    while insert_at > start + 1 and lines[insert_at - 1].strip() == "":
-        insert_at -= 1
-    lines.insert(insert_at, entry_line)
-    index.write_text("\n".join(lines), encoding="utf-8")
+        entry_line = f"- [{topic}]({category}/{filename}) — {hook}"
+        lines = index.read_text(encoding="utf-8").split("\n")
+        heading = SECTION_FOR[category]
+        try:
+            start = lines.index(heading)
+        except ValueError:
+            lines += ["", heading, "", entry_line]
+        else:
+            end = len(lines)
+            for i in range(start + 1, len(lines)):
+                if lines[i].startswith("## "):
+                    end = i
+                    break
+            insert_at = end
+            while insert_at > start + 1 and lines[insert_at - 1].strip() == "":
+                insert_at -= 1
+            lines.insert(insert_at, entry_line)
+        tmp = kb_root / f".INDEX.md.tmp-{os.getpid()}"
+        tmp.write_text("\n".join(lines), encoding="utf-8")
+        os.replace(tmp, index)
+        return True
+    finally:
+        os.close(lock_fd)
+        (kb_root / ".index.lock").unlink(missing_ok=True)
 
 
 def capture(args, today: date | None = None) -> tuple[dict, int]:
@@ -227,10 +271,20 @@ def capture(args, today: date | None = None) -> tuple[dict, int]:
         explicit_related.append({"kind": kind, "entry": target})
 
     entry_id = frontmatter.entry_id(body)
+    related = explicit_related + [
+        hit
+        for hit in classify_similar(kb_root, args.topic, body)
+        if hit["entry"] not in {r["entry"] for r in explicit_related}
+    ]
+    hook = args.hook or f"captured from {args.source} ({args.outcome})"
+    entry_text = build_entry(entry_id, args.source, today, args.topic, body,
+                             args.ref or [], related)
 
-    # secret gate (project profile) — refuse before any write
+    # secret gate (project profile) — scan the EXACT bytes that will be
+    # persisted (entry frontmatter incl. refs/related, body, and the INDEX
+    # hook text); refuse before any filesystem write
     allowlist = secret_rules.load_allowlist(kb_root / ".secret-allowlist")
-    findings = secret_rules.scan_text(args.topic + "\n" + body, allowlist)
+    findings = secret_rules.scan_text(entry_text + "\n" + hook, allowlist)
     if findings:
         return (
             {
@@ -257,23 +311,18 @@ def capture(args, today: date | None = None) -> tuple[dict, int]:
             10,
         )
 
-    related = explicit_related + [
-        hit
-        for hit in classify_similar(kb_root, args.topic, body)
-        if hit["entry"] not in {r["entry"] for r in explicit_related}
-    ]
-
     category = ROUTING[args.outcome]
     cat_dir = kb_root / category
     cat_dir.mkdir(parents=True, exist_ok=True)
-    target = unique_filename(cat_dir, today, slugify(args.topic))
-    target.write_text(
-        build_entry(entry_id, args.source, today, args.topic, body,
-                    args.ref or [], related),
-        encoding="utf-8",
-    )
-    hook = args.hook or f"captured from {args.source} ({args.outcome})"
-    add_index_line(kb_root, category, target.name, args.topic, hook)
+    target, fd = claim_entry_file(cat_dir, today, slugify(args.topic))
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        fh.write(entry_text)
+    if not add_index_line(kb_root, category, target.name, args.topic, hook):
+        print(
+            f"new_entry.py: WARNING index lock timeout — {target.name} written "
+            "without an INDEX line (kb-lint will flag the orphan)",
+            file=sys.stderr,
+        )
     return (
         {
             "action": "written",

@@ -132,10 +132,12 @@ def test_pr_entry_counter_chunks_at_15():
     assert len(chunks) == 3
 
 
-def test_pr_entry_counter_oversized_action_flagged():
+def test_pr_entry_counter_oversized_action_split_within_budget():
     actions = [{"action": "consolidate", "entries": [f"e{i}" for i in range(20)]}]
     chunks = mechanical.chunk_actions(actions)
-    assert len(chunks) == 1 and chunks[0][0]["oversized"] is True
+    assert len(chunks) == 2  # 15 + 5, never one over-budget chunk
+    assert [len(c[0]["entries"]) for c in chunks] == [15, 5]
+    assert all(c[0]["oversized"] is True for c in chunks)
 
 
 def test_report_includes_lint_and_chunks(tmp_path):
