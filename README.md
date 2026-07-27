@@ -12,8 +12,9 @@ repo; its `CONTRACT.md` defines every format and CLI protocol used here).
 ## Install
 
 ```sh
-/plugin marketplace add <path-or-git-url-of-this-repo>
+/plugin marketplace add jLAM-ERR/evc-plugins
 /plugin install evc-learning@evc-plugins
+/plugin install evc-workflow@evc-plugins
 ```
 
 ## Repo layout
