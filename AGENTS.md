@@ -23,7 +23,11 @@ governs every format, routing rule, and CLI protocol implemented here.
   scripts; run the shell suites under `plugins/evc-workflow/skills/run/
   scripts/*_test.sh` when touching those helpers.
 - Exit codes and JSON shapes of `new_entry.py` / `mechanical.py` are
-  CONTRACT-frozen — changing them is a contract change, made in evc first.
+  CONTRACT-frozen — changing them is a contract change, made in evc first
+  (bump CONTRACT's version there, tag it, then re-vendor here).
+- Releases are annotated tags: `<plugin>-vX.Y.Z` matching that plugin's
+  `plugin.json` version. Bump the manifest and tag in the same commit;
+  the two plugins version independently of each other and of evc.
 - The corporate plugin this repo was extracted from lives outside this
   repo and is a read-only source; never modify it from here. Corporate
   wiring (Jira/Confluence/Bitbucket) belongs to downstream overlays, not

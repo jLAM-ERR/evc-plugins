@@ -4,10 +4,16 @@ Claude Code plugin marketplace for **Enterprise Vibe Coding ([EVC](https://githu
 execution layer of the two-repo system (the knowledge layer is the `evc`
 repo; its `CONTRACT.md` defines every format and CLI protocol used here).
 
-| Plugin | Purpose |
-|--------|---------|
-| `evc-learning` | the learning loop: capture / retro / distill / promote |
-| `evc-workflow` | generic gated workflow (v0: run skill + 5 role agents) wired to the learning loop |
+| Plugin | Version | Purpose |
+|--------|---------|---------|
+| `evc-learning` | 0.2.0 | the learning loop: capture / retro / distill / promote |
+| `evc-workflow` | 0.1.0 | generic gated workflow (v0: run skill + 5 role agents) wired to the learning loop |
+
+Both plugins implement **evc CONTRACT 1.x** (currently 1.1.0). The two
+repos version independently — evc accretes knowledge continuously, plugins
+ship as releases — so compatibility is expressed by the CONTRACT major
+version, not by matching repo versions. Releases are annotated git tags:
+`vX.Y.Z` in evc, `<plugin>-vX.Y.Z` here.
 
 ## Install
 

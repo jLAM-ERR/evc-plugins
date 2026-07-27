@@ -1,3 +1,5 @@
 Vendored from the evc repo (the normative source — CONTRACT.md rule:
 vendored copies must be byte-identical to their SOURCE commit).
-SOURCE: evc@febd4e12794c34d90092b5277d88d140b7caebcc
+SOURCE: evc@v1.1.0 (956df45)
+The tag is the durable anchor; the short SHA pins the exact commit. Prefer
+the tag when re-vendoring — SHAs do not survive a history rewrite.
