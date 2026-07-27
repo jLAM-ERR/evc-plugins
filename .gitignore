@@ -9,3 +9,6 @@ Thumbs.db
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Local working docs (not published)
+docs/upstream-source-inventory.md
