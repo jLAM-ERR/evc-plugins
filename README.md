@@ -1,6 +1,6 @@
 # evc-plugins
 
-Claude Code plugin marketplace for **Enterprise Vibe Coding (EVC)** — the
+Claude Code plugin marketplace for **Enterprise Vibe Coding ([EVC](https://github.com/jLAM-ERR/evc))** — the
 execution layer of the two-repo system (the knowledge layer is the `evc`
 repo; its `CONTRACT.md` defines every format and CLI protocol used here).
 
