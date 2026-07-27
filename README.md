@@ -34,9 +34,11 @@ documented as such per plugin.
 
 ## Development rules
 
-- `tools/evclib/` is **vendored, never edited here** — fix in evc, re-vendor,
-  update `tools/evclib/SOURCE`. Scripts import it; no copies of
-  security-relevant code.
+- `evclib` is **vendored from evc, never edited here**. It lives in two
+  places — `tools/evclib/` (repo tooling) and
+  `plugins/evc-learning/lib/evclib/` (the copy installed plugins import,
+  since an install copies only the plugin dir). Fix in evc, re-copy both,
+  update each `SOURCE` marker; a test enforces they stay byte-identical.
 - Every skill passes `python3 tools/skill_lint.py` (frontmatter, name/dir
   match, description length, invocation marker).
 - `pytest -q` must be green before any commit that touches scripts.
