@@ -8,11 +8,12 @@ governs every format, routing rule, and CLI protocol implemented here.
 
 ## Hard rules
 
-- `tools/evclib/` and `plugins/evc-learning/lib/evclib/` are **vendored
-  from evc, never edited here** — fix in evc, re-copy both, update
-  `SOURCE`; a test enforces byte-identity between the copies. Real copies,
-  not symlinks — installs copy only the plugin dir; full rationale in the
-  evc KB: `knowledge/solutions/20260727-vendored-lib-in-installable-plugins.md`.
+- Every vendored `evclib` location here (`tools/evclib/`,
+  `plugins/evc-learning/lib/`) is **copied from evc, never edited here** —
+  fix in evc, re-copy *every* location, update each `SOURCE` marker. Real
+  copies, not symlinks: an install copies only the plugin dir. A copy no
+  byte-identity test covers is a false provenance claim — test it or
+  delete it. Rationale: evc `README.md` / `AGENTS.md`.
 - Scripts are Python 3.12 **stdlib-only** at runtime (offline corporate CI;
   pytest is dev-only). No network calls anywhere.
 - Every skill passes `python3 tools/skill_lint.py` (frontmatter, name/dir
