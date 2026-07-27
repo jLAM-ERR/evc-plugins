@@ -7,8 +7,7 @@ disable-model-invocation: true
 
 # run — the generic gated workflow
 
-Genericized from upstream-source (extraction inventory kept locally). One
-stage per invocation; freeze at every human gate; never infer approval
+One stage per invocation; freeze at every human gate; never infer approval
 from silence. Helpers live in `scripts/` next to this file; state lives at
 `.evc-workflow/runs/<KEY>/` (KEY = `TASK-<n>` or any `ABC-123`-style id
 you pick for the run).

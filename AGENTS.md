@@ -23,6 +23,7 @@ governs every format, routing rule, and CLI protocol implemented here.
   scripts/*_test.sh` when touching those helpers.
 - Exit codes and JSON shapes of `new_entry.py` / `mechanical.py` are
   CONTRACT-frozen — changing them is a contract change, made in evc first.
-- upstream-source (in corporate upstream-hub) is a read-only extraction source;
-  never modify it from here. Corporate wiring (Jira/Confluence/Bitbucket)
-  belongs to downstream overlays, not this repo.
+- The corporate plugin this repo was extracted from lives outside this
+  repo and is a read-only source; never modify it from here. Corporate
+  wiring (Jira/Confluence/Bitbucket) belongs to downstream overlays, not
+  this repo.

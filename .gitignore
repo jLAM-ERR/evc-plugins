@@ -11,4 +11,4 @@ __pycache__/
 .pytest_cache/
 
 # Local working docs (not published)
-docs/upstream-source-inventory.md
+docs/extraction-inventory.md
