@@ -1,5 +1,6 @@
 {
   "name": "evc-learning",
   "version": "0.2.0",
+  "license": "Apache-2.0",
   "description": "EVC learning loop: capture gate decisions and self-review findings into the project knowledge base; retro, distill (gardening) and promote follow the evc CONTRACT.md."
 }
