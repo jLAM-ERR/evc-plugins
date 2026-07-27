@@ -25,7 +25,7 @@ plugins/<name>/                   one dir per plugin (evc-learning also vendors 
 tools/evclib/                     vendored from evc (see tools/evclib/SOURCE)
 tools/skill_lint.py               deterministic SKILL.md validation
 tests/                            pytest (dev-only dependency)
-docs/                             inventory + per-harness smoke results
+docs/                             per-harness smoke-test checklist + results
 ```
 
 Skills follow the Agent Skills standard (SKILL.md + frontmatter), so they
