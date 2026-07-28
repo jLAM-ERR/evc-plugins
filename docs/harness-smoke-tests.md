@@ -22,7 +22,7 @@ machine. Checks 1–2 are per-harness behavioral probes.
 | Check | Claude Code 2.1.218 | Codex CLI 0.144.5 | OpenCode | Kilo Code |
 |-------|---------------------|-------------------|----------|-----------|
 | AGENTS.md read | **PASS** — `claude -p` returned the exact heading through the `CLAUDE.md @AGENTS.md` shim | **PASS** — native read confirmed (merged after the user's global `~/.codex` guidance; project file explicitly confirmed present in context) | BLOCKED¹ | PENDING² |
-| Skills discovered | **PASS** — marketplace plugins load (`claude plugin details`: evc-learning 4 skills + 2 hooks, evc-workflow 1 skill + 5 agents); project `.claude/skills/capture` native | **PASS** — `capture` listed, discovered via the `.agents/skills` symlink | BLOCKED¹ | PENDING² |
+| Skills discovered | **PASS** — marketplace plugins load (`claude plugin details`: autodidact-learning 4 skills + 2 hooks, autodidact-workflow 1 skill + 5 agents); project `.claude/skills/capture` native | **PASS** — `capture` listed, discovered via the `.agents/skills` symlink | BLOCKED¹ | PENDING² |
 | Capture writes entry | **PASS** — `new_entry.py capture` wrote `solutions/20260723-smoke-capture.md` + INDEX line (exit 0) | same (mechanical) | same (mechanical) | same (mechanical) |
 | kb-lint runs | **PASS** — exit 0 before and after capture | same (mechanical) | same (mechanical) | same (mechanical) |
 
@@ -46,7 +46,7 @@ by default (Kilo reads it natively) → check the skills panel lists
 SMOKE=$(mktemp -d)/smoke && cp -R <evc>/skeleton/. "$SMOKE" && cd "$SMOKE"
 rm ADOPTION.md && echo "$(date +%F) bootstrap: adopted" > docs/knowledge/.gardening-log
 git init -q && git add -A && git commit -qm init
-mkdir -p .claude/skills && cp -R <evc-plugins>/plugins/evc-learning/skills/capture .claude/skills/
+mkdir -p .claude/skills && cp -R <autodidact-plugins>/plugins/autodidact-learning/skills/capture .claude/skills/
 mkdir -p .agents && ln -s ../.claude/skills .agents/skills
 python3 <evc>/tools/kb_lint.py --root . --layout project           # check 4
 printf 'A lesson.' > /tmp/b.md && python3 .claude/skills/capture/scripts/new_entry.py \

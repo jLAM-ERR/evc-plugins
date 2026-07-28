@@ -30,13 +30,13 @@ dba"
 pass "default deep.design = architect, security, qa, dba"
 
 # test 3: project override wins over default
-mkdir -p .evc-workflow
-echo "standard.design=architect,qa,perf" > .evc-workflow/panel-members.conf
+mkdir -p .autodidact-workflow
+echo "standard.design=architect,qa,perf" > .autodidact-workflow/panel-members.conf
 assert_eq "override" "$(bash "$SCRIPT" members standard design)" "architect
 qa
 perf"
-rm -f .evc-workflow/panel-members.conf
-pass "project .evc-workflow/panel-members.conf overrides the default"
+rm -f .autodidact-workflow/panel-members.conf
+pass "project .autodidact-workflow/panel-members.conf overrides the default"
 
 # test 4: --security-required injects security when absent
 assert_eq "inject security" "$(bash "$SCRIPT" members standard design --security-required)" "architect
@@ -60,44 +60,44 @@ set +e; bash "$SCRIPT" bogus >/dev/null 2>&1; rc=$?; set -e
 pass "unknown subcommand exits 2"
 
 # test 8: whitespace-padded conf roles are trimmed, no leading spaces, security appended
-mkdir -p .evc-workflow
-echo "standard.design=architect, qa" > .evc-workflow/panel-members.conf
+mkdir -p .autodidact-workflow
+echo "standard.design=architect, qa" > .autodidact-workflow/panel-members.conf
 assert_eq "trim + inject" "$(bash "$SCRIPT" members standard design --security-required)" "architect
 qa
 security"
-rm -f .evc-workflow/panel-members.conf
+rm -f .autodidact-workflow/panel-members.conf
 pass "conf roles with whitespace are trimmed; --security-required appends security once"
 
 # test 9: whitespace-padded security role in conf is not duplicated
-mkdir -p .evc-workflow
-echo "standard.design=architect, security" > .evc-workflow/panel-members.conf
+mkdir -p .autodidact-workflow
+echo "standard.design=architect, security" > .autodidact-workflow/panel-members.conf
 assert_eq "no dup after trim" "$(bash "$SCRIPT" members standard design --security-required)" "architect
 security"
-rm -f .evc-workflow/panel-members.conf
+rm -f .autodidact-workflow/panel-members.conf
 pass "--security-required does not duplicate a whitespace-padded existing security role"
 
 # test 10: empty role list after trimming → exit 2 under /bin/bash (3.2)
-mkdir -p .evc-workflow
-echo "standard.design=" > .evc-workflow/panel-members.conf
+mkdir -p .autodidact-workflow
+echo "standard.design=" > .autodidact-workflow/panel-members.conf
 set +e; /bin/bash "$SCRIPT" members standard design >/dev/null 2>&1; rc=$?; set -e
 [ "$rc" -eq 2 ] || fail "empty member list should exit 2 under /bin/bash, got $rc"
-rm -f .evc-workflow/panel-members.conf
+rm -f .autodidact-workflow/panel-members.conf
 pass "empty member list (standard.design=) exits 2 under /bin/bash (3.2)"
 
 # test 11: tab-separated conf role is trimmed too (hand-edited conf case)
-mkdir -p .evc-workflow
-printf 'standard.design=architect,\tqa\n' > .evc-workflow/panel-members.conf
+mkdir -p .autodidact-workflow
+printf 'standard.design=architect,\tqa\n' > .autodidact-workflow/panel-members.conf
 assert_eq "tab trim" "$(bash "$SCRIPT" members standard design)" "architect
 qa"
-rm -f .evc-workflow/panel-members.conf
+rm -f .autodidact-workflow/panel-members.conf
 pass "tab-separated conf role is trimmed"
 
 # test 12: mid-list empty token (double comma) is skipped
-mkdir -p .evc-workflow
-echo "standard.design=architect,,qa" > .evc-workflow/panel-members.conf
+mkdir -p .autodidact-workflow
+echo "standard.design=architect,,qa" > .autodidact-workflow/panel-members.conf
 assert_eq "empty token skipped" "$(bash "$SCRIPT" members standard design)" "architect
 qa"
-rm -f .evc-workflow/panel-members.conf
+rm -f .autodidact-workflow/panel-members.conf
 pass "mid-list empty token (double comma) is skipped"
 
 echo "all tests passed"

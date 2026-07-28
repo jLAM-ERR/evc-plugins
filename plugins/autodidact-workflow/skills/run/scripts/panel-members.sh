@@ -2,13 +2,13 @@
 # panel-members.sh — resolve the design-panel role list for a (tier, stage).
 #   members <tier> <stage> [--security-required]
 # Reads a flat `tier.stage=role,role` config: the project's
-# .evc-workflow/panel-members.conf if present, else the shipped default.
+# .autodidact-workflow/panel-members.conf if present, else the shipped default.
 # Prints one role per line. Unknown tier.stage → exit 2.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_CONF="$SCRIPT_DIR/panel-members.default.conf"
-PROJECT_CONF=".evc-workflow/panel-members.conf"
+PROJECT_CONF=".autodidact-workflow/panel-members.conf"
 
 _trim() {
   printf '%s' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'

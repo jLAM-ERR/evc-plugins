@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run-state.sh — manage an evc-workflow run-file at .evc-workflow/runs/<KEY>.yaml
+# run-state.sh — manage an autodidact-workflow run-file at .autodidact-workflow/runs/<KEY>.yaml
 # KEY is always the first arg after the subcommand.
 #   init <KEY> [ticket]                                  create run-file + artifacts dir (idempotent)
 #   path <KEY>                                           print the run-file path
@@ -13,7 +13,7 @@
 #   threshold                                            print the decline-escalation threshold
 set -euo pipefail
 
-RUNS_DIR=".evc-workflow/runs"
+RUNS_DIR=".autodidact-workflow/runs"
 THRESHOLD=2
 
 _file() { echo "$RUNS_DIR/$1.yaml"; }
@@ -166,7 +166,7 @@ cmd_commit() {
     return 0
   fi
   git add -- "${pathspec[@]}"
-  git commit -q -m "chore(evc-workflow): $stage $decision [$key]" -- "${pathspec[@]}"
+  git commit -q -m "chore(autodidact-workflow): $stage $decision [$key]" -- "${pathspec[@]}"
 }
 
 # reads the `status:` field from the run-file as committed at HEAD.
@@ -287,7 +287,7 @@ cmd_cleanup() {
     if [ "${#pathspec[@]}" -eq 0 ]; then
       echo "run-state: cleanup $key: nothing to commit"
     else
-      git commit -q -m "chore(evc-workflow): cleanup [$key]" -- "${pathspec[@]}"
+      git commit -q -m "chore(autodidact-workflow): cleanup [$key]" -- "${pathspec[@]}"
     fi
   fi
 

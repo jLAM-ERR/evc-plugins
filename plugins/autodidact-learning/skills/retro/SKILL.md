@@ -40,7 +40,7 @@ fresh pass beats looping.
 3. **Curator merge (you).** Merge the three lists: dedupe, drop anything
    that is really codebase-derivable, keep at most **10 proposals**
    (CONTRACT §Tunables). Before finalizing, read
-   `.evc/retro-acceptance.md` if present and **deprioritize finding types
+   `.autodidact/retro-acceptance.md` if present and **deprioritize finding types
    the user has repeatedly rejected**.
 
 4. **Per-proposal approval.** Present each proposal separately (topic, the
@@ -52,6 +52,6 @@ fresh pass beats looping.
    the `capture` skill; never hand-write entries.
 
 6. **Log acceptance.** Append one line per proposal to
-   `.evc/retro-acceptance.md` (create the dir if needed):
+   `.autodidact/retro-acceptance.md` (create the dir if needed):
    `YYYY-MM-DD accepted|rejected <lens> — <topic>`. This log is what makes
    step 3's self-tuning possible.

@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 One stage per invocation; freeze at every human gate; never infer approval
 from silence. Helpers live in `scripts/` next to this file; state lives at
-`.evc-workflow/runs/<KEY>/` (KEY = `TASK-<n>` or any `ABC-123`-style id
+`.autodidact-workflow/runs/<KEY>/` (KEY = `TASK-<n>` or any `ABC-123`-style id
 you pick for the run).
 
 ## Pipeline
@@ -44,9 +44,9 @@ Use `scripts/run-state.sh` for init/status/record at every stage;
 
 ## Learning-loop wiring (every gate — this is not optional)
 
-After EACH explicit gate decision, capture it with the evc-learning
+After EACH explicit gate decision, capture it with the autodidact-learning
 capture CLI (deterministic protocol — never hand-write entries). Locate it
-at `<evc-plugins>/plugins/evc-learning/skills/capture/scripts/new_entry.py`
+at `<autodidact-plugins>/plugins/autodidact-learning/skills/capture/scripts/new_entry.py`
 (installed plugin cache or repo checkout):
 
 - gate **approved** and the stage taught something reusable →
@@ -65,7 +65,7 @@ retry, never bypass.
 At **wrap-up**, run the thresholds check and act on it:
 
 ```sh
-python3 <evc-plugins>/plugins/evc-learning/skills/distill/scripts/mechanical.py \
+python3 <autodidact-plugins>/plugins/autodidact-learning/skills/distill/scripts/mechanical.py \
   thresholds --kb-root docs/knowledge
 ```
 

@@ -1,15 +1,15 @@
-# Agent rules — evc-plugins repository
+# Agent rules — autodidact-plugins repository
 
 This repo is the EVC execution layer: a Claude Code plugin marketplace
-shipping `evc-learning` (capture / retro / distill / promote) and
-`evc-workflow` (generic gated workflow). The knowledge layer and the
+shipping `autodidact-learning` (capture / retro / distill / promote) and
+`autodidact-workflow` (generic gated workflow). The knowledge layer and the
 normative contract live in the sibling `evc` repo — `CONTRACT.md` there
 governs every format, routing rule, and CLI protocol implemented here.
 
 ## Hard rules
 
 - Every vendored `evclib` location here (`tools/evclib/`,
-  `plugins/evc-learning/lib/`) is **copied from evc, never edited here** —
+  `plugins/autodidact-learning/lib/`) is **copied from evc, never edited here** —
   fix in evc, re-copy *every* location, update each `SOURCE` marker. Real
   copies, not symlinks: an install copies only the plugin dir. A copy no
   byte-identity test covers is a false provenance claim — test it or
@@ -20,7 +20,7 @@ governs every format, routing rule, and CLI protocol implemented here.
   match, description ≤1024, `invocation:` marker; `invocation: user`
   requires `disable-model-invocation: true`).
 - `python3 -m pytest tests/ -q` must be green before any commit touching
-  scripts; run the shell suites under `plugins/evc-workflow/skills/run/
+  scripts; run the shell suites under `plugins/autodidact-workflow/skills/run/
   scripts/*_test.sh` when touching those helpers.
 - Exit codes and JSON shapes of `new_entry.py` / `mechanical.py` are
   CONTRACT-frozen — changing them is a contract change, made in evc first

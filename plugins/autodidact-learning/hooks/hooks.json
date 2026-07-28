@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'if [ -f docs/knowledge/INDEX.md ]; then python3 \"${CLAUDE_PLUGIN_ROOT}/skills/distill/scripts/mechanical.py\" thresholds --kb-root docs/knowledge >/dev/null 2>&1; if [ $? -eq 4 ]; then echo \"evc-learning: KB gardening thresholds hit - run the distill skill at the next natural boundary\"; fi; fi; exit 0'"
+            "command": "sh -c 'if [ -f docs/knowledge/INDEX.md ]; then python3 \"${CLAUDE_PLUGIN_ROOT}/skills/distill/scripts/mechanical.py\" thresholds --kb-root docs/knowledge >/dev/null 2>&1; if [ $? -eq 4 ]; then echo \"autodidact-learning: KB gardening thresholds hit - run the distill skill at the next natural boundary\"; fi; fi; exit 0'"
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'if [ -f docs/knowledge/INDEX.md ]; then echo \"evc-learning: if this session produced learnings (gate decisions, corrections, good answers), file them with the capture skill before closing\"; fi; exit 0'"
+            "command": "sh -c 'if [ -f docs/knowledge/INDEX.md ]; then echo \"autodidact-learning: if this session produced learnings (gate decisions, corrections, good answers), file them with the capture skill before closing\"; fi; exit 0'"
           }
         ]
       }

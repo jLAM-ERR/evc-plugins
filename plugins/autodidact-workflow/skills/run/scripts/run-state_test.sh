@@ -14,7 +14,7 @@ assert_eq() {
 }
 
 KEY="TASK-1"
-RUNFILE=".evc-workflow/runs/$KEY.yaml"
+RUNFILE=".autodidact-workflow/runs/$KEY.yaml"
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
@@ -23,9 +23,9 @@ cd "$WORK"
 # test 1: init creates run-file + artifacts dir, status running
 bash "$SCRIPT" init "$KEY" >/dev/null
 [ -f "$RUNFILE" ]               || fail "init did not create run-file"
-[ -d ".evc-workflow/runs/$KEY/" ] || fail "init did not create artifacts dir"
+[ -d ".autodidact-workflow/runs/$KEY/" ] || fail "init did not create artifacts dir"
 assert_eq "init status"        "$(bash "$SCRIPT" get "$KEY" status)"        "running"
-assert_eq "init artifacts_dir" "$(bash "$SCRIPT" get "$KEY" artifacts_dir)" ".evc-workflow/runs/$KEY/"
+assert_eq "init artifacts_dir" "$(bash "$SCRIPT" get "$KEY" artifacts_dir)" ".autodidact-workflow/runs/$KEY/"
 pass "init creates run-file + artifacts dir with status running"
 
 # test 2: init idempotent (never clobbers)
@@ -68,7 +68,7 @@ git init -q
 git config user.email t@t.com
 git config user.name T
 bash "$SCRIPT" commit "$KEY" intake approve >/dev/null
-git log --oneline -1 | grep -q "chore(evc-workflow): intake approve \[$KEY\]" \
+git log --oneline -1 | grep -q "chore(autodidact-workflow): intake approve \[$KEY\]" \
   || fail "commit message wrong: $(git log --oneline -1)"
 pass "commit lands with the expected message"
 
@@ -80,15 +80,15 @@ set -e
 [ "$rc" -eq 2 ] || fail "unknown subcommand should exit 2, got $rc"
 pass "unknown subcommand exits 2"
 
-# test 10: init rejects a path-traversal KEY, creates nothing outside .evc-workflow/runs
+# test 10: init rejects a path-traversal KEY, creates nothing outside .autodidact-workflow/runs
 set +e
 bash "$SCRIPT" init '../../ESCAPED' 2>/dev/null
 rc=$?
 set -e
 [ "$rc" -eq 2 ]        || fail "traversal KEY should exit 2, got $rc"
-[ ! -e "ESCAPED" ]      || fail "traversal KEY created a dir outside .evc-workflow/runs"
-[ ! -e "ESCAPED.yaml" ] || fail "traversal KEY created a file outside .evc-workflow/runs"
-pass "init rejects a path-traversal KEY and creates nothing outside .evc-workflow/runs"
+[ ! -e "ESCAPED" ]      || fail "traversal KEY created a dir outside .autodidact-workflow/runs"
+[ ! -e "ESCAPED.yaml" ] || fail "traversal KEY created a file outside .autodidact-workflow/runs"
+pass "init rejects a path-traversal KEY and creates nothing outside .autodidact-workflow/runs"
 
 # test 11: init rejects a non-canonical KEY (no dash + digits)
 set +e
@@ -100,9 +100,9 @@ pass "init rejects a non-canonical KEY"
 
 # test 12: canonical KEYs still work
 bash "$SCRIPT" init 'TASK-123' >/dev/null
-[ -f ".evc-workflow/runs/TASK-123.yaml" ] || fail "init did not create run-file for TASK-123"
+[ -f ".autodidact-workflow/runs/TASK-123.yaml" ] || fail "init did not create run-file for TASK-123"
 bash "$SCRIPT" init 'K-1' >/dev/null
-[ -f ".evc-workflow/runs/K-1.yaml" ] || fail "init did not create run-file for K-1"
+[ -f ".autodidact-workflow/runs/K-1.yaml" ] || fail "init did not create run-file for K-1"
 pass "init still accepts canonical KEYs (TASK-123, K-1)"
 
 # test 13: append-history note with a double quote is escaped and round-trips
@@ -131,9 +131,9 @@ KEY_FIFO="K-2"
 bash "$SCRIPT" init "$KEY_FIFO" >/dev/null
 bash "$SCRIPT" append-answer "$KEY_FIFO" "first answer"
 bash "$SCRIPT" append-answer "$KEY_FIFO" "second answer"
-FIRST_LINE=$(grep -n '"first answer"' ".evc-workflow/runs/$KEY_FIFO.yaml" | cut -d: -f1)
-SECOND_LINE=$(grep -n '"second answer"' ".evc-workflow/runs/$KEY_FIFO.yaml" | cut -d: -f1)
-HISTORY_LINE=$(grep -n '^history:' ".evc-workflow/runs/$KEY_FIFO.yaml" | cut -d: -f1)
+FIRST_LINE=$(grep -n '"first answer"' ".autodidact-workflow/runs/$KEY_FIFO.yaml" | cut -d: -f1)
+SECOND_LINE=$(grep -n '"second answer"' ".autodidact-workflow/runs/$KEY_FIFO.yaml" | cut -d: -f1)
+HISTORY_LINE=$(grep -n '^history:' ".autodidact-workflow/runs/$KEY_FIFO.yaml" | cut -d: -f1)
 [ -n "$FIRST_LINE" ] && [ -n "$SECOND_LINE" ] && [ -n "$HISTORY_LINE" ] || fail "FIFO answers or history: line missing"
 [ "$FIRST_LINE" -lt "$SECOND_LINE" ] || fail "answers not in FIFO order (first should precede second)"
 [ "$SECOND_LINE" -lt "$HISTORY_LINE" ] || fail "answers must stay inside spec.answers, before history:"
@@ -142,7 +142,7 @@ pass "append-answer keeps insertion order (FIFO) and stays before history:"
 # test 17: set on a nonexistent field exits 2 and leaves the file unchanged
 KEY_SET="K-3"
 bash "$SCRIPT" init "$KEY_SET" >/dev/null
-RUNFILE_SET=".evc-workflow/runs/$KEY_SET.yaml"
+RUNFILE_SET=".autodidact-workflow/runs/$KEY_SET.yaml"
 BEFORE=$(cat "$RUNFILE_SET")
 set +e
 bash "$SCRIPT" set "$KEY_SET" bogusfield x 2>/dev/null
@@ -174,7 +174,7 @@ git add unrelated_scope.txt
 bash "$SCRIPT" commit "$KEY_SCOPE" intake approve >/dev/null
 COMMIT_FILES=$(git show --name-only --pretty=format: HEAD)
 echo "$COMMIT_FILES" | grep -q "unrelated_scope.txt" && fail "commit swept in the unrelated pre-staged file"
-echo "$COMMIT_FILES" | grep -q ".evc-workflow/runs/$KEY_SCOPE.yaml" || fail "commit did not include the run-file"
+echo "$COMMIT_FILES" | grep -q ".autodidact-workflow/runs/$KEY_SCOPE.yaml" || fail "commit did not include the run-file"
 git status --porcelain -- unrelated_scope.txt | grep -q '^A  unrelated_scope.txt' || fail "unrelated file no longer staged after commit"
 pass "commit is scoped: unrelated pre-staged file stays out and stays staged"
 
@@ -190,11 +190,11 @@ pass "repeat commit is idempotent: exit 0 with notice"
 # test 22: commit succeeds when the artifacts dir is empty/untracked (only the run-file gets committed)
 KEY_EMPTY="K-5"
 bash "$SCRIPT" init "$KEY_EMPTY" >/dev/null
-[ -z "$(ls -A ".evc-workflow/runs/$KEY_EMPTY/" 2>/dev/null)" ] || fail "artifacts dir for $KEY_EMPTY should start empty"
+[ -z "$(ls -A ".autodidact-workflow/runs/$KEY_EMPTY/" 2>/dev/null)" ] || fail "artifacts dir for $KEY_EMPTY should start empty"
 bash "$SCRIPT" commit "$KEY_EMPTY" intake approve >/dev/null
 EMPTY_COMMIT_FILES=$(git show --name-only --pretty=format: HEAD)
-echo "$EMPTY_COMMIT_FILES" | grep -q ".evc-workflow/runs/$KEY_EMPTY.yaml" || fail "commit did not include the run-file for $KEY_EMPTY"
-echo "$EMPTY_COMMIT_FILES" | grep -q ".evc-workflow/runs/$KEY_EMPTY/" && fail "commit should not reference the empty artifacts dir"
+echo "$EMPTY_COMMIT_FILES" | grep -q ".autodidact-workflow/runs/$KEY_EMPTY.yaml" || fail "commit did not include the run-file for $KEY_EMPTY"
+echo "$EMPTY_COMMIT_FILES" | grep -q ".autodidact-workflow/runs/$KEY_EMPTY/" && fail "commit should not reference the empty artifacts dir"
 pass "commit succeeds with an empty/untracked artifacts dir; only the run-file is committed"
 
 # test 23: a run-file staged then reverted back to HEAD in the worktree has nothing
@@ -202,7 +202,7 @@ pass "commit succeeds with an empty/untracked artifacts dir; only the run-file i
 # commit must exit 0 with the notice and leave the staged state untouched
 KEY_REVERT="K-6"
 bash "$SCRIPT" init "$KEY_REVERT" >/dev/null
-RUNFILE_REVERT=".evc-workflow/runs/$KEY_REVERT.yaml"
+RUNFILE_REVERT=".autodidact-workflow/runs/$KEY_REVERT.yaml"
 bash "$SCRIPT" commit "$KEY_REVERT" intake approve >/dev/null
 echo "extra: staged-then-reverted" >> "$RUNFILE_REVERT"
 git add "$RUNFILE_REVERT"
@@ -238,13 +238,13 @@ rc=$?
 set -e
 [ "$rc" -ne 0 ] || fail "cleanup on a non-done run should fail, got exit 0"
 echo "$OUT" | grep -qi "done" || fail "cleanup refusal message should mention 'done': $OUT"
-[ -f ".evc-workflow/runs/$KEY_CLEAN.yaml" ] || fail "cleanup refusal must leave the run-file in place"
+[ -f ".autodidact-workflow/runs/$KEY_CLEAN.yaml" ] || fail "cleanup refusal must leave the run-file in place"
 pass "cleanup refuses unless status is done"
 
 # test 26: --force overrides the non-done refusal
 bash "$SCRIPT" cleanup "$KEY_CLEAN" --force >/dev/null
-[ ! -e ".evc-workflow/runs/$KEY_CLEAN.yaml" ] || fail "--force cleanup should remove the run-file"
-[ ! -e ".evc-workflow/runs/$KEY_CLEAN/" ]     || fail "--force cleanup should remove the artifacts dir"
+[ ! -e ".autodidact-workflow/runs/$KEY_CLEAN.yaml" ] || fail "--force cleanup should remove the run-file"
+[ ! -e ".autodidact-workflow/runs/$KEY_CLEAN/" ]     || fail "--force cleanup should remove the artifacts dir"
 pass "cleanup --force overrides the non-done refusal"
 
 # test 27: cleanup is idempotent — a second run exits 0 with an already-clean notice
@@ -262,25 +262,25 @@ pass "cleanup is idempotent: exit 0 with an already-clean notice on the second r
 # cleaning TASK-1 would take TASK-12 down with it)
 KEY_SIB="TASK-12"
 bash "$SCRIPT" init "$KEY_SIB" >/dev/null
-echo "sibling artifact" > ".evc-workflow/runs/$KEY_SIB/note.md"
+echo "sibling artifact" > ".autodidact-workflow/runs/$KEY_SIB/note.md"
 bash "$SCRIPT" cleanup "$KEY" --force >/dev/null
 [ ! -e "$RUNFILE" ]                         || fail "cleanup did not remove $KEY's run-file"
-[ ! -e ".evc-workflow/runs/$KEY/" ]          || fail "cleanup did not remove $KEY's artifacts dir"
-[ -f ".evc-workflow/runs/$KEY_SIB.yaml" ]    || fail "cleanup of $KEY swept the longer sibling's run-file (glob footgun)"
-[ -d ".evc-workflow/runs/$KEY_SIB/" ]        || fail "cleanup of $KEY swept the longer sibling's artifacts dir (glob footgun)"
-[ -f ".evc-workflow/runs/$KEY_SIB/note.md" ] || fail "cleanup of $KEY swept the longer sibling's artifact file (glob footgun)"
+[ ! -e ".autodidact-workflow/runs/$KEY/" ]          || fail "cleanup did not remove $KEY's artifacts dir"
+[ -f ".autodidact-workflow/runs/$KEY_SIB.yaml" ]    || fail "cleanup of $KEY swept the longer sibling's run-file (glob footgun)"
+[ -d ".autodidact-workflow/runs/$KEY_SIB/" ]        || fail "cleanup of $KEY swept the longer sibling's artifacts dir (glob footgun)"
+[ -f ".autodidact-workflow/runs/$KEY_SIB/note.md" ] || fail "cleanup of $KEY swept the longer sibling's artifact file (glob footgun)"
 pass "cleanup of a shorter prefix KEY leaves a longer (glob-suffix-matching) sibling untouched"
 
 # test 29: the cleanup commit contains exactly the run-file + artifact paths, nothing else
 KEY_COMMIT="TASK-30"
 bash "$SCRIPT" init "$KEY_COMMIT" >/dev/null
-echo "stub" > ".evc-workflow/runs/$KEY_COMMIT/design.md"
+echo "stub" > ".autodidact-workflow/runs/$KEY_COMMIT/design.md"
 bash "$SCRIPT" commit "$KEY_COMMIT" design approve >/dev/null
 bash "$SCRIPT" set "$KEY_COMMIT" status "done"
 bash "$SCRIPT" commit "$KEY_COMMIT" pr "done" >/dev/null
 bash "$SCRIPT" cleanup "$KEY_COMMIT" >/dev/null
 CLEANUP_FILES=$(git show --name-only --pretty=format: HEAD | sort)
-EXPECTED=$(printf '.evc-workflow/runs/%s.yaml\n.evc-workflow/runs/%s/design.md' "$KEY_COMMIT" "$KEY_COMMIT" | sort)
+EXPECTED=$(printf '.autodidact-workflow/runs/%s.yaml\n.autodidact-workflow/runs/%s/design.md' "$KEY_COMMIT" "$KEY_COMMIT" | sort)
 [ "$CLEANUP_FILES" = "$EXPECTED" ] || fail "cleanup commit should contain exactly the run-file + artifact, got: $CLEANUP_FILES"
 pass "cleanup commit contains exactly the run-file + artifact paths"
 
@@ -289,12 +289,12 @@ pass "cleanup commit contains exactly the run-file + artifact paths"
 # not report "already clean" and leave the deletions uncommitted
 KEY_INTERRUPT="TASK-50"
 bash "$SCRIPT" init "$KEY_INTERRUPT" >/dev/null
-echo "stub" > ".evc-workflow/runs/$KEY_INTERRUPT/design.md"
+echo "stub" > ".autodidact-workflow/runs/$KEY_INTERRUPT/design.md"
 bash "$SCRIPT" commit "$KEY_INTERRUPT" design approve >/dev/null
 bash "$SCRIPT" set "$KEY_INTERRUPT" status "done"
 bash "$SCRIPT" commit "$KEY_INTERRUPT" pr "done" >/dev/null
-FILE_INTERRUPT=".evc-workflow/runs/$KEY_INTERRUPT.yaml"
-ART_INTERRUPT=".evc-workflow/runs/$KEY_INTERRUPT/"
+FILE_INTERRUPT=".autodidact-workflow/runs/$KEY_INTERRUPT.yaml"
+ART_INTERRUPT=".autodidact-workflow/runs/$KEY_INTERRUPT/"
 git rm -r -q -f --ignore-unmatch -- "$FILE_INTERRUPT" "$ART_INTERRUPT" >/dev/null
 [ ! -e "$FILE_INTERRUPT" ] || fail "manual git rm should have cleared the run-file from the worktree"
 git status --porcelain -- "$FILE_INTERRUPT" "$ART_INTERRUPT" | grep -q '^D' || fail "manual git rm should leave staged deletions behind"
@@ -314,8 +314,8 @@ pass "cleanup finishes a commit interrupted between git rm and git commit instea
 KEY_ACTIVE="TASK-70"
 bash "$SCRIPT" init "$KEY_ACTIVE" >/dev/null
 bash "$SCRIPT" commit "$KEY_ACTIVE" intake approve >/dev/null
-FILE_ACTIVE=".evc-workflow/runs/$KEY_ACTIVE.yaml"
-ART_ACTIVE=".evc-workflow/runs/$KEY_ACTIVE/"
+FILE_ACTIVE=".autodidact-workflow/runs/$KEY_ACTIVE.yaml"
+ART_ACTIVE=".autodidact-workflow/runs/$KEY_ACTIVE/"
 git rm -r -q -f --ignore-unmatch -- "$FILE_ACTIVE" "$ART_ACTIVE" >/dev/null
 rm -rf -- "$ART_ACTIVE"   # empty/untracked dir: git rm leaves it, mirror cleanup's own untracked-leftover removal
 [ ! -e "$FILE_ACTIVE" ] || fail "manual git rm should have cleared the active run's run-file from the worktree"
@@ -340,8 +340,8 @@ KEY_UNCOMMITTED="TASK-80"
 bash "$SCRIPT" init "$KEY_UNCOMMITTED" >/dev/null
 bash "$SCRIPT" commit "$KEY_UNCOMMITTED" intake approve >/dev/null
 bash "$SCRIPT" set "$KEY_UNCOMMITTED" status "done"
-FILE_UNCOMMITTED=".evc-workflow/runs/$KEY_UNCOMMITTED.yaml"
-ART_UNCOMMITTED=".evc-workflow/runs/$KEY_UNCOMMITTED/"
+FILE_UNCOMMITTED=".autodidact-workflow/runs/$KEY_UNCOMMITTED.yaml"
+ART_UNCOMMITTED=".autodidact-workflow/runs/$KEY_UNCOMMITTED/"
 BEFORE_HEAD=$(git rev-parse HEAD)
 set +e
 OUT=$(bash "$SCRIPT" cleanup "$KEY_UNCOMMITTED" 2>&1)
@@ -363,8 +363,8 @@ pass "cleanup refuses an uncommitted worktree-done status, then succeeds once co
 # (HEAD copy exists but the status: field is missing)
 KEY_NOSTATUS="TASK-90"
 bash "$SCRIPT" init "$KEY_NOSTATUS" >/dev/null
-FILE_NOSTATUS=".evc-workflow/runs/$KEY_NOSTATUS.yaml"
-ART_NOSTATUS=".evc-workflow/runs/$KEY_NOSTATUS/"
+FILE_NOSTATUS=".autodidact-workflow/runs/$KEY_NOSTATUS.yaml"
+ART_NOSTATUS=".autodidact-workflow/runs/$KEY_NOSTATUS/"
 grep -v '^status:' "$FILE_NOSTATUS" > "$FILE_NOSTATUS.tmp" && mv "$FILE_NOSTATUS.tmp" "$FILE_NOSTATUS"
 grep -q '^status:' "$FILE_NOSTATUS" && fail "test setup: status: line should have been removed"
 bash "$SCRIPT" commit "$KEY_NOSTATUS" intake approve >/dev/null
@@ -385,8 +385,8 @@ pass "cleanup refuses a staged deletion whose committed copy has no status: line
 # tracked-artifact deletions with no committed run-file to verify against
 KEY_TRACKED_ART="TASK-100"
 bash "$SCRIPT" init "$KEY_TRACKED_ART" >/dev/null
-FILE_TRACKED_ART=".evc-workflow/runs/$KEY_TRACKED_ART.yaml"
-ART_TRACKED_ART=".evc-workflow/runs/$KEY_TRACKED_ART/"
+FILE_TRACKED_ART=".autodidact-workflow/runs/$KEY_TRACKED_ART.yaml"
+ART_TRACKED_ART=".autodidact-workflow/runs/$KEY_TRACKED_ART/"
 echo "stub" > "${ART_TRACKED_ART}note.md"
 git add "${ART_TRACKED_ART}note.md"
 git commit -q -m "manual: track artifact only, bypassing cmd_commit"
@@ -411,18 +411,18 @@ pass "cleanup refuses when artifacts are tracked but the run-file was never comm
 # --force — the done-guard's contract is status:done, not "no run-file to check"
 KEY_ORPHAN="TASK-60"
 bash "$SCRIPT" init "$KEY_ORPHAN" >/dev/null
-echo "leftover" > ".evc-workflow/runs/$KEY_ORPHAN/leftover.md"
-rm -f ".evc-workflow/runs/$KEY_ORPHAN.yaml"
+echo "leftover" > ".autodidact-workflow/runs/$KEY_ORPHAN/leftover.md"
+rm -f ".autodidact-workflow/runs/$KEY_ORPHAN.yaml"
 set +e
 OUT=$(bash "$SCRIPT" cleanup "$KEY_ORPHAN" 2>&1)
 rc=$?
 set -e
 [ "$rc" -ne 0 ] || fail "cleanup of an orphaned artifacts dir should refuse without --force, got exit 0"
 echo "$OUT" | grep -qi "run-file missing" || fail "orphan refusal message should explain the run-file is missing: $OUT"
-[ -d ".evc-workflow/runs/$KEY_ORPHAN/" ]             || fail "orphan refusal must leave the artifacts dir in place"
-[ -f ".evc-workflow/runs/$KEY_ORPHAN/leftover.md" ]  || fail "orphan refusal must leave the artifact file in place"
+[ -d ".autodidact-workflow/runs/$KEY_ORPHAN/" ]             || fail "orphan refusal must leave the artifacts dir in place"
+[ -f ".autodidact-workflow/runs/$KEY_ORPHAN/leftover.md" ]  || fail "orphan refusal must leave the artifact file in place"
 bash "$SCRIPT" cleanup "$KEY_ORPHAN" --force >/dev/null
-[ ! -e ".evc-workflow/runs/$KEY_ORPHAN/" ] || fail "--force should remove the orphaned artifacts dir"
+[ ! -e ".autodidact-workflow/runs/$KEY_ORPHAN/" ] || fail "--force should remove the orphaned artifacts dir"
 pass "cleanup refuses an orphaned artifacts dir without --force, and --force removes it"
 
 # test 36: cleanup --push retry must actually reach the remote after a failed
@@ -470,7 +470,7 @@ rc=$?
 set -e
 [ "$rc" -ne 0 ] || fail "first cleanup --push should fail against a diverged remote, got exit 0"
 echo "$OUT" | grep -q "push failed" || fail "first cleanup --push missing the push-failed message: $OUT"
-[ ! -e ".evc-workflow/runs/$KEY_RETRY.yaml" ] || fail "the cleanup commit should still have removed the run-file locally"
+[ ! -e ".autodidact-workflow/runs/$KEY_RETRY.yaml" ] || fail "the cleanup commit should still have removed the run-file locally"
 
 git fetch -q origin
 git rebase -q "origin/$BRANCH"

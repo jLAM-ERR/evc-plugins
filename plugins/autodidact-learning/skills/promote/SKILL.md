@@ -26,7 +26,7 @@ disable-model-invocation: true
    local allowlist does NOT travel upstream:
 
    ```sh
-   python3 <evc-checkout>/tools/kb_lint.py --root <evc-checkout> --layout evc
+   python3 <evc-checkout>/tools/kb_lint.py --root <evc-checkout> --layout hub
    ```
 
    after placing the entry (next step) — exit must be 0.

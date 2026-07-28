@@ -1,6 +1,6 @@
 ---
 name: panel-role
-description: One design-panel role (architect | qa | security | dba) reviewing a spec through its single lens. Returns structured recommendations, risks, and concerns. Used by the evc-workflow run skill's design stage.
+description: One design-panel role (architect | qa | security | dba) reviewing a spec through its single lens. Returns structured recommendations, risks, and concerns. Used by the autodidact-workflow run skill's design stage.
 model: sonnet
 tools: Read, Bash, Glob, Grep
 ---

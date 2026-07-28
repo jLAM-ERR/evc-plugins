@@ -13,7 +13,7 @@ Input from caller: a plan file path + a task identifier (exact `### Task N: <tit
 
 Task model: a task is a `### Task N: <title>` block; the `- [ ]` lines beneath it, up to the next `### Task` header or end of file, are that task's checklist. A task is complete only when ALL its `- [ ]` items are `[x]` — not after finishing just one item.
 
-Note: in an evc-workflow run context, the plan is `.evc-workflow/runs/<KEY>/run-plan.md` (the run's artifacts dir), not a `docs/plans/` file — the `[x]` marks you make in it are run artifacts, committed at the gate along with the rest, not a standalone plan commit. Everything else below still applies.
+Note: in an autodidact-workflow run context, the plan is `.autodidact-workflow/runs/<KEY>/run-plan.md` (the run's artifacts dir), not a `docs/plans/` file — the `[x]` marks you make in it are run artifacts, committed at the gate along with the rest, not a standalone plan commit. Everything else below still applies.
 
 Procedure:
 

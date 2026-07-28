@@ -1,4 +1,4 @@
-# evc-plugins
+# autodidact-plugins
 
 Claude Code plugin marketplace for **Enterprise Vibe Coding ([EVC](https://github.com/jLAM-ERR/evc))** — the
 execution layer of the two-repo system (the knowledge layer is the `evc`
@@ -6,8 +6,8 @@ repo; its `CONTRACT.md` defines every format and CLI protocol used here).
 
 | Plugin | Version | Purpose |
 |--------|---------|---------|
-| `evc-learning` | 0.2.0 | the learning loop: capture / retro / distill / promote |
-| `evc-workflow` | 0.1.0 | generic gated workflow (v0: run skill + 5 role agents) wired to the learning loop |
+| `autodidact-learning` | 0.2.0 | the learning loop: capture / retro / distill / promote |
+| `autodidact-workflow` | 0.1.0 | generic gated workflow (v0: run skill + 5 role agents) wired to the learning loop |
 
 Both plugins implement **evc CONTRACT 1.x** (currently 1.1.0). The two
 repos version independently — evc accretes knowledge continuously, plugins
@@ -18,16 +18,16 @@ version, not by matching repo versions. Releases are annotated git tags:
 ## Install
 
 ```sh
-/plugin marketplace add jLAM-ERR/evc-plugins
-/plugin install evc-learning@evc-plugins
-/plugin install evc-workflow@evc-plugins
+/plugin marketplace add jLAM-ERR/autodidact-plugins
+/plugin install autodidact-learning@autodidact-plugins
+/plugin install autodidact-workflow@autodidact-plugins
 ```
 
 ## Repo layout
 
 ```
 .claude-plugin/marketplace.json   the catalog
-plugins/<name>/                   one dir per plugin (evc-learning also vendors lib/evclib)
+plugins/<name>/                   one dir per plugin (autodidact-learning also vendors lib/evclib)
 tools/evclib/                     vendored from evc (see tools/evclib/SOURCE)
 tools/skill_lint.py               deterministic SKILL.md validation
 tests/                            pytest (dev-only dependency)
@@ -42,7 +42,7 @@ documented as such per plugin.
 
 - `evclib` is **vendored from evc, never edited here**. It lives in two
   places — `tools/evclib/` (repo tooling) and
-  `plugins/evc-learning/lib/evclib/` (the copy installed plugins import,
+  `plugins/autodidact-learning/lib/evclib/` (the copy installed plugins import,
   since an install copies only the plugin dir). Fix in evc, re-copy both,
   update each `SOURCE` marker; a test enforces they stay byte-identical.
 - Every skill passes `python3 tools/skill_lint.py` (frontmatter, name/dir

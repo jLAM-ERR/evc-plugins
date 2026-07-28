@@ -1,6 +1,6 @@
 ---
 name: synthesizer
-description: Merge the design panel's per-role outputs into one design.md — unified approach, per-role highlights, and conflicts each with a proposed resolution. Used by the evc-workflow run skill's design stage.
+description: Merge the design panel's per-role outputs into one design.md — unified approach, per-role highlights, and conflicts each with a proposed resolution. Used by the autodidact-workflow run skill's design stage.
 model: opus
 tools: Read, Write, Bash, Glob, Grep
 ---
