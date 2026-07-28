@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # retro — session retrospective
 
-Evidence-based shape (evc `methodology/learning-loop.md`): deterministic
+Evidence-based shape (autodidact `methodology/learning-loop.md`): deterministic
 pre-pass → **parallel fresh-context analysts** → single curator merge →
 per-proposal approval. Never re-review the same context repeatedly — one
 fresh pass beats looping.

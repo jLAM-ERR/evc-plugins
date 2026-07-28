@@ -6,7 +6,7 @@ invocation: both
 
 # capture — file a learning into the project KB
 
-Normative rules: `CONTRACT.md` in the evc repo. This skill only *classifies
+Normative rules: `CONTRACT.md` in the autodidact repo. This skill only *classifies
 and appends* — it never edits existing entries (mutations belong to the
 `distill` gardening PR).
 

@@ -1,5 +1,5 @@
 {
-  "description": "Claude Code adapter ONLY (portable harnesses get no hooks; the same nudges are documented in the evc methodology). SessionStart: gardening-overdue nudge from the deterministic thresholds CLI. Stop: capture reminder.",
+  "description": "Claude Code adapter ONLY (portable harnesses get no hooks; the same nudges are documented in the autodidact methodology). SessionStart: gardening-overdue nudge from the deterministic thresholds CLI. Stop: capture reminder.",
   "hooks": {
     "SessionStart": [
       {

@@ -1,6 +1,6 @@
 # Per-harness smoke tests
 
-Checklist per harness, run inside a project adopted from the evc skeleton
+Checklist per harness, run inside a project adopted from the autodidact skeleton
 (`skeleton/` copied, gardening log refreshed, `.claude/skills/capture`
 present, `.agents/skills → .claude/skills` symlink created):
 
@@ -11,7 +11,7 @@ present, `.agents/skills → .claude/skills` symlink created):
 3. **Capture writes entry** — the capture CLI creates a valid routed
    entry + INDEX line in `docs/knowledge/` (harness-agnostic: any harness
    with shell access can run it).
-4. **kb-lint runs** — `python3 <evc>/tools/kb_lint.py --root . --layout
+4. **kb-lint runs** — `python3 <autodidact>/tools/kb_lint.py --root . --layout
    project` exits 0.
 
 Checks 3–4 are mechanical and harness-independent — executed once per
@@ -43,12 +43,12 @@ by default (Kilo reads it natively) → check the skills panel lists
 ## Reproduce
 
 ```sh
-SMOKE=$(mktemp -d)/smoke && cp -R <evc>/skeleton/. "$SMOKE" && cd "$SMOKE"
+SMOKE=$(mktemp -d)/smoke && cp -R <autodidact>/skeleton/. "$SMOKE" && cd "$SMOKE"
 rm ADOPTION.md && echo "$(date +%F) bootstrap: adopted" > docs/knowledge/.gardening-log
 git init -q && git add -A && git commit -qm init
 mkdir -p .claude/skills && cp -R <autodidact-plugins>/plugins/autodidact-learning/skills/capture .claude/skills/
 mkdir -p .agents && ln -s ../.claude/skills .agents/skills
-python3 <evc>/tools/kb_lint.py --root . --layout project           # check 4
+python3 <autodidact>/tools/kb_lint.py --root . --layout project           # check 4
 printf 'A lesson.' > /tmp/b.md && python3 .claude/skills/capture/scripts/new_entry.py \
   capture --kb-root docs/knowledge --topic smoke --outcome approve \
   --source self-review --body-file /tmp/b.md                        # check 3

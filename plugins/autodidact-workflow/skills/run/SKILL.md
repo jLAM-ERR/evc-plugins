@@ -71,5 +71,5 @@ python3 <autodidact-plugins>/plugins/autodidact-learning/skills/distill/scripts/
 
 Exit 4 → tell the user thresholds are hit and offer to run the `distill`
 skill now (workflow boundary = the designed distillation moment); exit 0 →
-nothing to do; exit 1 → the project has no KB (suggest adopting the evc
+nothing to do; exit 1 → the project has no KB (suggest adopting the autodidact
 skeleton).
