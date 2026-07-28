@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-SIGNALS = REPO / "plugins/evc-learning/skills/retro/scripts/signals.py"
+SIGNALS = REPO / "plugins/autodidact-learning/skills/retro/scripts/signals.py"
 
 spec = importlib.util.spec_from_file_location("signals", SIGNALS)
 signals = importlib.util.module_from_spec(spec)

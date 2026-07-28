@@ -12,7 +12,7 @@ import pytest
 from kblib import frontmatter, kb_checks
 
 REPO = Path(__file__).resolve().parent.parent
-NEW_ENTRY = REPO / "plugins/evc-learning/skills/capture/scripts/new_entry.py"
+NEW_ENTRY = REPO / "plugins/autodidact-learning/skills/capture/scripts/new_entry.py"
 
 spec = importlib.util.spec_from_file_location("new_entry", NEW_ENTRY)
 new_entry = importlib.util.module_from_spec(spec)

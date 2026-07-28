@@ -10,7 +10,7 @@ from pathlib import Path
 from kblib import frontmatter
 
 REPO = Path(__file__).resolve().parent.parent
-MECHANICAL = REPO / "plugins/evc-learning/skills/distill/scripts/mechanical.py"
+MECHANICAL = REPO / "plugins/autodidact-learning/skills/distill/scripts/mechanical.py"
 
 spec = importlib.util.spec_from_file_location("mechanical", MECHANICAL)
 mechanical = importlib.util.module_from_spec(spec)

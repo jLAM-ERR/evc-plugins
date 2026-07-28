@@ -1,0 +1,6 @@
+{
+  "name": "autodidact-workflow",
+  "version": "0.2.0",
+  "license": "Apache-2.0",
+  "description": "Generic gated workflow (intake with interrogation, design panel, implement, harden+review, wrap-up); gate decisions feed the autodidact-learning capture CLI and wrap-up triggers distill on thresholds. Corporate ticket/PR wiring stays in downstream overlays."
+}

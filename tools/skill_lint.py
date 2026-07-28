@@ -7,7 +7,7 @@ Checks per skill dir (plugins/*/skills/*/):
   2. name: present, <=64 chars, lowercase kebab, equals the dir name
      (agentskills.io spec);
   3. description: present, <=1024 chars (spec);
-  4. invocation marker present: `invocation: user|model|both` (EVC rule --
+  4. invocation marker present: `invocation: user|model|both` (autodidact rule --
      every skill declares how it is meant to be triggered);
   5. `invocation: user` requires `disable-model-invocation: true` (the
      Claude Code mechanism that actually enforces it);

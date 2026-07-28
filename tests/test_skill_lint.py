@@ -17,7 +17,7 @@ Body.
 
 
 def make_skill(root: Path, dirname: str, content: str) -> Path:
-    skill_dir = root / "plugins" / "evc-learning" / "skills" / dirname
+    skill_dir = root / "plugins" / "autodidact-learning" / "skills" / dirname
     skill_dir.mkdir(parents=True)
     (skill_dir / "SKILL.md").write_text(content, encoding="utf-8")
     return skill_dir
@@ -41,7 +41,7 @@ def test_unparseable_frontmatter(tmp_path):
 def test_name_dir_mismatch(tmp_path):
     make_skill(tmp_path, "other-dir", VALID)
     problems = skill_lint.lint_skill_dir(
-        tmp_path / "plugins/evc-learning/skills/other-dir"
+        tmp_path / "plugins/autodidact-learning/skills/other-dir"
     )
     assert any("does not match dir" in p for p in problems)
 

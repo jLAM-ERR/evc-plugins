@@ -1,4 +1,4 @@
-"""Regressions from the Codex adversarial review of the evc-learning plugin:
+"""Regressions from the Codex adversarial review of the autodidact-learning plugin:
 install-shape self-containment, full-persist secret scan, concurrent
 capture safety, chunk budget enforcement."""
 
@@ -11,7 +11,7 @@ from datetime import date
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-PLUGIN = REPO / "plugins/evc-learning"
+PLUGIN = REPO / "plugins/autodidact-learning"
 NEW_ENTRY_REL = "skills/capture/scripts/new_entry.py"
 
 
@@ -37,7 +37,7 @@ def test_vendored_lib_byte_identical_to_tools():
 def test_install_shape_plugin_is_self_contained(tmp_path):
     """Copy ONLY the plugin dir (installed shape — no repo tools/) and run
     all three CLIs from there."""
-    plug = tmp_path / "cache" / "evc-learning"
+    plug = tmp_path / "cache" / "autodidact-learning"
     shutil.copytree(PLUGIN, plug)
     kb = make_kb(tmp_path / "project")
     body = tmp_path / "b.md"

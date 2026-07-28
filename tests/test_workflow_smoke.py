@@ -14,8 +14,8 @@ from pathlib import Path
 from kblib import kb_checks
 
 REPO = Path(__file__).resolve().parent.parent
-NEW_ENTRY = REPO / "plugins/evc-learning/skills/capture/scripts/new_entry.py"
-MECHANICAL = REPO / "plugins/evc-learning/skills/distill/scripts/mechanical.py"
+NEW_ENTRY = REPO / "plugins/autodidact-learning/skills/capture/scripts/new_entry.py"
+MECHANICAL = REPO / "plugins/autodidact-learning/skills/distill/scripts/mechanical.py"
 
 
 def make_project(tmp_path: Path) -> Path:
