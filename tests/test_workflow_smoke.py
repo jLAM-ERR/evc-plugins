@@ -11,7 +11,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from evclib import kb_checks
+from kblib import kb_checks
 
 REPO = Path(__file__).resolve().parent.parent
 NEW_ENTRY = REPO / "plugins/evc-learning/skills/capture/scripts/new_entry.py"

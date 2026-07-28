@@ -11,7 +11,7 @@ Checks per skill dir (plugins/*/skills/*/):
      every skill declares how it is meant to be triggered);
   5. `invocation: user` requires `disable-model-invocation: true` (the
      Claude Code mechanism that actually enforces it);
-  6. secret scan over the whole SKILL.md (evclib rules).
+  6. secret scan over the whole SKILL.md (kblib rules).
 
 Exit codes: 0 clean / 2 violations (mirrors kb-lint hard-fail semantics).
 """
@@ -25,7 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from evclib import frontmatter, secret_rules  # noqa: E402
+from kblib import frontmatter, secret_rules  # noqa: E402
 
 SKILL_KEY_RE = re.compile(r"^([a-z][a-z0-9_-]*)$")
 SCALAR_RE = re.compile(r"^([a-z][a-z0-9_-]*): (.+)$")
@@ -36,7 +36,7 @@ INVOCATION_VALUES = ("user", "model", "both")
 
 
 def parse_skill_frontmatter(text: str) -> dict[str, str | list[str]]:
-    """Same grammar as evclib.frontmatter but keys may contain dashes
+    """Same grammar as kblib.frontmatter but keys may contain dashes
     (SKILL.md carries keys like disable-model-invocation)."""
     fm_lines, _body = frontmatter.split(text)
     data: dict[str, str | list[str]] = {}

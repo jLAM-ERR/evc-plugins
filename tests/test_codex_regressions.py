@@ -28,8 +28,8 @@ def make_kb(base: Path) -> Path:
 
 
 def test_vendored_lib_byte_identical_to_tools():
-    tools = REPO / "tools/evclib"
-    lib = PLUGIN / "lib/evclib"
+    tools = REPO / "tools/kblib"
+    lib = PLUGIN / "lib/kblib"
     for name in ("__init__.py", "frontmatter.py", "kb_checks.py", "secret_rules.py"):
         assert filecmp.cmp(tools / name, lib / name, shallow=False), name
 

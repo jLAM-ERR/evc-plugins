@@ -28,18 +28,18 @@ from datetime import date
 from pathlib import Path
 
 
-def _find_evclib() -> Path:
+def _find_kblib() -> Path:
     for parent in Path(__file__).resolve().parents:
         for rel in ("lib", "tools"):
-            candidate = parent / rel / "evclib"
+            candidate = parent / rel / "kblib"
             if candidate.is_dir():
                 return parent / rel
-    raise SystemExit("mechanical.py: cannot locate tools/evclib")
+    raise SystemExit("mechanical.py: cannot locate tools/kblib")
 
 
-sys.path.insert(0, str(_find_evclib()))
+sys.path.insert(0, str(_find_kblib()))
 
-from evclib import frontmatter, kb_checks  # noqa: E402
+from kblib import frontmatter, kb_checks  # noqa: E402
 
 CANDIDATE_TRIGGER = 25
 INDEX_FILL_TRIGGER = 0.80
@@ -213,7 +213,7 @@ def _layout_of(kb_root: Path) -> tuple[Path, str] | None:
     if resolved.name == "knowledge" and resolved.parent.name == "docs":
         return resolved.parent.parent, "project"
     if resolved.name == "knowledge":
-        return resolved.parent, "evc"
+        return resolved.parent, "hub"
     return None
 
 

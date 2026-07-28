@@ -60,7 +60,7 @@ def test_signal_text_is_redacted():
     report = signals.scan_transcript(text)
     joined = json.dumps(report)
     assert "AKIAIOSFODNN7EXAMPLE" not in joined
-    assert "[REDACTED:EVC-SEC-002]" in joined
+    assert "[REDACTED:KB-SEC-002]" in joined
 
 
 def test_cli_scan_and_missing_file(tmp_path):

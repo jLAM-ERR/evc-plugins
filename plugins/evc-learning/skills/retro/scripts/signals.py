@@ -9,7 +9,7 @@ literature; errors and retry clusters follow). Output: one JSON object
 {"signals": [{"type": "correction"|"error"|"repeated-failure",
 "line_no": int, "text": str}, ...], "counts": {...}}.
 
-Signal text is secret-scanned (evclib rules) and redacted, so the pre-pass
+Signal text is secret-scanned (kblib rules) and redacted, so the pre-pass
 output can be safely handed to analyst subagents.
 
 Exit codes: 0 report produced (even if empty) / 1 error.
@@ -25,18 +25,18 @@ from collections import Counter
 from pathlib import Path
 
 
-def _find_evclib() -> Path:
+def _find_kblib() -> Path:
     for parent in Path(__file__).resolve().parents:
         for rel in ("lib", "tools"):
-            candidate = parent / rel / "evclib"
+            candidate = parent / rel / "kblib"
             if candidate.is_dir():
                 return parent / rel
-    raise SystemExit("signals.py: cannot locate tools/evclib")
+    raise SystemExit("signals.py: cannot locate tools/kblib")
 
 
-sys.path.insert(0, str(_find_evclib()))
+sys.path.insert(0, str(_find_kblib()))
 
-from evclib import secret_rules  # noqa: E402
+from kblib import secret_rules  # noqa: E402
 
 CORRECTION_RES = [
     re.compile(p, re.IGNORECASE)

@@ -30,12 +30,12 @@ def _luhn_valid(digits: str) -> bool:
     return total % 10 == 0
 
 
-# (rule_id, compiled regex); EVC-SEC-005 additionally requires Luhn validity.
+# (rule_id, compiled regex); KB-SEC-005 additionally requires Luhn validity.
 RULES: list[tuple[str, re.Pattern[str]]] = [
-    ("EVC-SEC-001", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
-    ("EVC-SEC-002", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
+    ("KB-SEC-001", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
+    ("KB-SEC-002", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
     (
-        "EVC-SEC-003",
+        "KB-SEC-003",
         re.compile(
             r"(?i)[a-z0-9_]*(?:api[_-]?key|secret|token|password|passwd|credential)"
             r"[a-z0-9_]*\s*[:=]\s*"
@@ -43,15 +43,15 @@ RULES: list[tuple[str, re.Pattern[str]]] = [
         ),
     ),
     (
-        "EVC-SEC-004",
+        "KB-SEC-004",
         re.compile(
             r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b"
             r"|(?i:\bBearer\s+[A-Za-z0-9_\-.=+/]{16,})"
         ),
     ),
-    ("EVC-SEC-005", re.compile(r"\b(?:\d[ -]?){12,18}\d\b")),
-    ("EVC-SEC-006", re.compile(r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b")),
-    ("EVC-PII-001", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
+    ("KB-SEC-005", re.compile(r"\b(?:\d[ -]?){12,18}\d\b")),
+    ("KB-SEC-006", re.compile(r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b")),
+    ("KB-PII-001", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
 ]
 
 
@@ -75,7 +75,7 @@ def scan_text(text: str, allowlist: frozenset[str] = frozenset()) -> list[Findin
         for rule_id, pattern in RULES:
             for m in pattern.finditer(line):
                 matched = m.group(0)
-                if rule_id == "EVC-SEC-005":
+                if rule_id == "KB-SEC-005":
                     digits = re.sub(r"[ -]", "", matched)
                     if not (13 <= len(digits) <= 19 and _luhn_valid(digits)):
                         continue

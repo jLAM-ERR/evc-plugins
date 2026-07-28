@@ -35,18 +35,18 @@ from datetime import date
 from pathlib import Path
 
 
-def _find_evclib() -> Path:
+def _find_kblib() -> Path:
     for parent in Path(__file__).resolve().parents:
         for rel in ("lib", "tools"):
-            candidate = parent / rel / "evclib"
+            candidate = parent / rel / "kblib"
             if candidate.is_dir():
                 return parent / rel
-    raise SystemExit("new_entry.py: cannot locate tools/evclib (repo layout broken)")
+    raise SystemExit("new_entry.py: cannot locate tools/kblib (repo layout broken)")
 
 
-sys.path.insert(0, str(_find_evclib()))
+sys.path.insert(0, str(_find_kblib()))
 
-from evclib import frontmatter, secret_rules  # noqa: E402
+from kblib import frontmatter, secret_rules  # noqa: E402
 
 ROUTING = {
     "approve": "solutions",

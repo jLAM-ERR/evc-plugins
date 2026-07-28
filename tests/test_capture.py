@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from evclib import frontmatter, kb_checks
+from kblib import frontmatter, kb_checks
 
 REPO = Path(__file__).resolve().parent.parent
 NEW_ENTRY = REPO / "plugins/evc-learning/skills/capture/scripts/new_entry.py"
@@ -132,7 +132,7 @@ def test_secret_refusal(tmp_path):
     kb = make_kb(tmp_path)
     result, code = run_capture(tmp_path, kb, "creds AKIAIOSFODNN7EXAMPLE here")
     assert code == 2 and result["action"] == "refused"
-    assert "EVC-SEC-002" in result["findings"]
+    assert "KB-SEC-002" in result["findings"]
     assert not list((kb / "solutions").glob("*.md"))
 
 

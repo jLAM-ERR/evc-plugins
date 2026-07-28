@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
-from evclib import frontmatter, secret_rules
+from kblib import frontmatter, secret_rules
 
 # Values below mirror CONTRACT.md §Tunables (the canonical record).
 INDEX_MAX_LINES = 200
@@ -46,7 +46,7 @@ class LintFinding:
 
 
 def kb_dir_for(root: Path, layout: str) -> Path:
-    if layout == "evc":
+    if layout == "hub":
         return root / "knowledge"
     if layout == "project":
         return root / "docs" / "knowledge"
@@ -54,7 +54,7 @@ def kb_dir_for(root: Path, layout: str) -> Path:
 
 
 def allowlist_path_for(root: Path, layout: str) -> Path:
-    if layout == "evc":
+    if layout == "hub":
         return root / "tools" / "allowlist.txt"
     return kb_dir_for(root, layout) / ".secret-allowlist"
 

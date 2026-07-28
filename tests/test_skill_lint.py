@@ -96,11 +96,11 @@ def test_user_invocation_requires_disable_flag(tmp_path):
 
 def test_secret_in_skill_md_fails(tmp_path):
     d = make_skill(tmp_path, "capture", VALID + "\nexample AKIAIOSFODNN7EXAMPLE\n")
-    assert any("EVC-SEC-002" in p for p in skill_lint.lint_skill_dir(d))
+    assert any("KB-SEC-002" in p for p in skill_lint.lint_skill_dir(d))
 
 
-def test_vendored_evclib_imports():
-    from evclib import frontmatter, kb_checks, secret_rules  # noqa: F401
+def test_vendored_kblib_imports():
+    from kblib import frontmatter, kb_checks, secret_rules  # noqa: F401
 
     assert frontmatter.entry_id("hello world") == "b94d27b9934d"
-    assert (Path(__file__).parent.parent / "tools/evclib/SOURCE").is_file()
+    assert (Path(__file__).parent.parent / "tools/kblib/SOURCE").is_file()

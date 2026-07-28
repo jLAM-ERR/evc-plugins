@@ -7,7 +7,7 @@ import sys
 from datetime import date, timedelta
 from pathlib import Path
 
-from evclib import frontmatter
+from kblib import frontmatter
 
 REPO = Path(__file__).resolve().parent.parent
 MECHANICAL = REPO / "plugins/evc-learning/skills/distill/scripts/mechanical.py"
@@ -166,3 +166,19 @@ def test_cli_thresholds_exit_codes(tmp_path):
     bad = subprocess.run([sys.executable, str(MECHANICAL), "thresholds",
                           "--kb-root", str(tmp_path)], capture_output=True, text=True)
     assert bad.returncode == 1 and "INDEX.md" in bad.stderr
+
+def test_layout_of_resolves_both_layouts(tmp_path):
+    """_layout_of must return the CONTRACT layout values; the hub branch was
+    previously uncovered and silently returned a retired identifier."""
+    project_kb = make_kb(tmp_path / "p", project_layout=True)
+    hub_kb = make_kb(tmp_path / "h", project_layout=False)
+    assert mechanical._layout_of(project_kb)[1] == "project"
+    assert mechanical._layout_of(hub_kb)[1] == "hub"
+    assert mechanical._layout_of(tmp_path / "nope") is None
+
+
+def test_lint_pass_runs_on_hub_layout(tmp_path):
+    """A hub-layout KB must lint without raising 'unknown layout'."""
+    hub_kb = make_kb(tmp_path, project_layout=False)
+    result = mechanical.lint_pass(hub_kb, TODAY)
+    assert result is None or isinstance(result, (dict, list, tuple, str))
